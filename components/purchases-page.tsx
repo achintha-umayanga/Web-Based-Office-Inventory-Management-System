@@ -19,33 +19,31 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 
-
 export function PurchasesPage() {
   const { inventory, purchases, addPurchase } = useInventory()
   const [searchTerm, setSearchTerm] = useState("")
   const [sortField, setSortField] = useState<keyof PurchaseLog>("date")
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc")
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc")
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [newPurchase, setNewPurchase] = useState({
     date: new Date().toISOString().split("T")[0],
     itemId: "",
-    quantity: 0,
+    quantity: 1,
   })
-
   const [errors, setErrors] = useState({
     itemId: false,
     quantity: false,
   })
 
-  // Filter and sort purchases
+  // Filter purchases based on search term
   const filteredPurchases = purchases.filter(
     (purchase) =>
       purchase.itemName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       purchase.category.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
-  //sort purchases
-  const sortedPurchases = filteredPurchases.sort((a, b) => {
+  // Sort purchases
+  const sortedPurchases = [...filteredPurchases].sort((a, b) => {
     if (sortField === "date") {
       return sortDirection === "asc"
         ? new Date(a.date).getTime() - new Date(b.date).getTime()
@@ -57,9 +55,9 @@ export function PurchasesPage() {
     return 0
   })
 
-  // Handle sort field change
+  // Handle sort
   const handleSort = (field: keyof PurchaseLog) => {
-    if (sortField === field) {
+    if (field === sortField) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc")
     } else {
       setSortField(field)
@@ -67,8 +65,9 @@ export function PurchasesPage() {
     }
   }
 
-  // Handle add purchase dialog
+  // Handle add purchase
   const handleAddPurchase = () => {
+    // Validate form
     const newErrors = {
       itemId: !newPurchase.itemId,
       quantity: newPurchase.quantity <= 0,
@@ -80,6 +79,7 @@ export function PurchasesPage() {
       return
     }
 
+    // Get selected item details
     const selectedItem = inventory.find((item) => item.id === newPurchase.itemId)
 
     if (!selectedItem) {
@@ -95,7 +95,7 @@ export function PurchasesPage() {
       quantity: newPurchase.quantity,
     })
 
-    // Reset form
+    // Reset form and close dialog
     setNewPurchase({
       date: new Date().toISOString().split("T")[0],
       itemId: "",
