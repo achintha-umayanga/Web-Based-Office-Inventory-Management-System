@@ -39,8 +39,7 @@ Built with modern web technologies, it ensures fast performance and a responsive
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/office-inventory-system.git
-cd office-inventory-system
+git clone https://github.com/achintha-umayanga/Web-Based-Office-Inventory-Management-System.git
 
 # Install dependencies
 npm install  # or yarn install
