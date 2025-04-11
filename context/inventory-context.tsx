@@ -47,7 +47,7 @@ const InventoryContext = createContext<InventoryContextType | undefined>(undefin
 export function InventoryProvider({ children }: { children: ReactNode }) {
     const [inventory, setInventory] = useState<InventoryItem[]>([])
     const [purchases, setPurchases] = useState<PurchaseLog[]>([])
-    const [usage, setUsage] = useState<UsageLog[]>([])
+    const [usage, setUsages] = useState<UsageLog[]>([])
     const { toast } = useToast()
 
     useEffect(() => {
@@ -62,7 +62,7 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
             setPurchases(JSON.parse(storedPurchases))
         }
         if (storedUsage) {
-            setUsage(JSON.parse(storedUsage))
+            setUsages(JSON.parse(storedUsage))
         }
 
         if (!storedInventory) {
@@ -195,6 +195,33 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
         toast({
             title: "Purchase Added",
             description: `Purchased ${purchase.quantity} units of ${purchase.itemName}.`,
+        })
+    }
+
+    //adding usage logs
+    const addUsage = (usage: Omit<UsageLog, "id">) => {
+        const newUsage = {
+            ...usage,
+            id: Date.now().toString(),
+        }
+
+        setUsages([...usages, newUsage])
+
+        //updating inventory quantity
+        const itemIndex = inventory.findIndex((item) => item.id === usage.itemId)
+
+        if (itemIndex !== -1) {
+            const updatedInventory = [...inventory]
+            updatedInventory[itemIndex] = {
+                ...updatedInventory[itemIndex],
+                currentQuantity: updatedInventory[itemIndex].currentQuantity - usage.quantity,
+            }
+            setInventory(updatedInventory)
+        }
+
+        toast({
+            title: "Usage Added",
+            description: `Used ${usage.quantity} units of ${usage.itemName}.`,
         })
     }
 }
