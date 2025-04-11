@@ -119,72 +119,64 @@ export function UsagePage() {
                 Log Usage
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="sm:max-w-[500px]">
               <DialogHeader>
                 <DialogTitle>Log New Usage</DialogTitle>
                 <DialogDescription>Record usage of inventory items.</DialogDescription>
               </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="date" className="text-right">
-                    Date
-                  </Label>
+              <div className="flex flex-col gap-4 py-4">
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="date">Date</Label>
                   <Input
                     id="date"
                     type="date"
                     value={newUsage.date}
                     onChange={(e) => setNewUsage({ ...newUsage, date: e.target.value })}
-                    className="col-span-3"
                   />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="item" className="text-right">
-                    Item
-                  </Label>
-                  <div className="col-span-3">
-                    <Select
-                      value={newUsage.itemId}
-                      onValueChange={(value) => setNewUsage({ ...newUsage, itemId: value })}
-                    >
-                      <SelectTrigger id="item" className={errors.itemId ? "border-red-500" : ""}>
-                        <SelectValue placeholder="Select an item" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {inventory.map((item) => (
-                          <SelectItem key={item.id} value={item.id}>
-                            {item.name} ({item.category}) - {item.currentStock} in stock
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {errors.itemId && <p className="text-sm text-red-500 mt-1">Please select an item</p>}
-                  </div>
+
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="item">Item</Label>
+                  <Select
+                    value={newUsage.itemId}
+                    onValueChange={(value) => setNewUsage({ ...newUsage, itemId: value })}
+                  >
+                    <SelectTrigger id="item" className={errors.itemId ? "border-red-500" : ""}>
+                      <SelectValue placeholder="Select an item" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {inventory.map((item) => (
+                        <SelectItem key={item.id} value={item.id}>
+                          {item.name} ({item.category}) - {item.currentStock} in stock
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.itemId && <p className="text-sm text-red-500 mt-1">Please select an item</p>}
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="quantity" className="text-right">
-                    Quantity Used
-                  </Label>
-                  <div className="col-span-3">
-                    <Input
-                      id="quantity"
-                      type="number"
-                      min="1"
-                      max={selectedItem?.currentStock || 1}
-                      value={newUsage.quantity}
-                      onChange={(e) => setNewUsage({ ...newUsage, quantity: Number.parseInt(e.target.value) || 0 })}
-                      className={errors.quantity || errors.insufficientStock ? "border-red-500" : ""}
-                    />
-                    {errors.quantity && <p className="text-sm text-red-500 mt-1">Quantity must be greater than 0</p>}
-                    {errors.insufficientStock && (
-                      <p className="text-sm text-red-500 mt-1">
-                        Insufficient stock. Only {selectedItem?.currentStock} available.
-                      </p>
-                    )}
-                  </div>
+
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="quantity">Quantity Used</Label>
+                  <Input
+                    id="quantity"
+                    type="number"
+                    min="1"
+                    max={selectedItem?.currentStock || 1}
+                    value={newUsage.quantity}
+                    onChange={(e) => setNewUsage({ ...newUsage, quantity: Number.parseInt(e.target.value) || 0 })}
+                    className={errors.quantity || errors.insufficientStock ? "border-red-500" : ""}
+                  />
+                  {errors.quantity && <p className="text-sm text-red-500 mt-1">Quantity must be greater than 0</p>}
+                  {errors.insufficientStock && (
+                    <p className="text-sm text-red-500 mt-1">
+                      Insufficient stock. Only {selectedItem?.currentStock} available.
+                    </p>
+                  )}
                 </div>
+
                 {selectedItem && (
-                  <div className="col-span-4 p-3 bg-muted rounded-md text-sm">
-                    <p>
+                  <div className="mt-2 p-4 bg-muted rounded-md text-sm">
+                    <p className="mb-1">
                       Current stock of {selectedItem.name}: <strong>{selectedItem.currentStock}</strong>
                     </p>
                     {newUsage.quantity > 0 && (
@@ -195,7 +187,7 @@ export function UsagePage() {
                   </div>
                 )}
               </div>
-              <DialogFooter>
+              <DialogFooter className="mt-2">
                 <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
                   Cancel
                 </Button>
