@@ -224,4 +224,35 @@ export function InventoryProvider({ children }: { children: ReactNode }) {
             description: `Used ${usage.quantity} units of ${usage.itemName}.`,
         })
     }
+
+    //getting inventory item by id\
+    const getInventoryItem = (id: string) => {
+        return inventory.find((item) => item.id === id)
+    }
+
+    return (
+        <InventoryContext.Provider
+            value={{
+                inventory,
+                purchases,
+                usage,
+                addInventoryItem,
+                updateInventoryItem,
+                deleteInventoryItem,
+                addPurchase,
+                addUsage,
+                getInventoryItem,
+            }}
+        >
+            {children}
+        </InventoryContext.Provider>
+    )
+}
+
+export function useInventory() {
+    const context = useContext(InventoryContext)
+    if (context === undefined) {
+        throw new Error("useInventory must be used within an InventoryProvider")
+    }
+    return context
 }
